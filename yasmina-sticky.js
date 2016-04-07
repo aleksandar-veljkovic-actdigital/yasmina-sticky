@@ -57,7 +57,8 @@ $.fn.ySticky = function (settings) {
 // eof sticky  prototype
 
 // STICKY MPU
-$('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd:$('#ad-SE-holder')});
+$('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd:$('#ad-SE-holder')}); // www.yasmina.com
+$('.desktop #ad-above-fold-mpu-holder').ySticky({offsetTop: 20, $stEnd:$('#home-motors')}); // www.mazyune.com
 // eof sticky mpu
 
 // STICKY LB/TOP 
@@ -106,7 +107,7 @@ $('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd:$('#ad-SE
   stEndList = stEndList.concat($(".cc-article article .w__desk--right").toArray());
   stEndList = stEndList.concat($(".cc-event article .w__desk--right").toArray());
   stEndList = stEndList.concat($(".cc-slideshow article .w__desk--right").toArray());
-  stEndList = stEndList.concat($(".tpl-personalityTest-detail article .w__desk--right").toArray());  
+  stEndList = stEndList.concat($(".tpl-personalityTest-detail article .w__desk--right").toArray());
   
   stEndList = stEndList.concat($(".tpl-homepage .b__hero--hp").toArray());
   stEndList = stEndList.concat($("body  > .page-wrapper-holder").toArray());
