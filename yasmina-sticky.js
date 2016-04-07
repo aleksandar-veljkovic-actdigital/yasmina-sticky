@@ -1,3 +1,12 @@
+(function () {
+  var originalAddClassMethod = jQuery.fn.addClass;
+  jQuery.fn.addClass = function () {
+    var result = originalAddClassMethod.apply(this, arguments);
+    jQuery(this).trigger('classAdded');
+    return result;
+  };
+})();
+
 // STICKY PROTOTYPE
 $.fn.ySticky = function (settings) {
   var $stElement = $(this).eq(0);
@@ -46,7 +55,6 @@ $.fn.ySticky = function (settings) {
   $(window).load(calculateAndSet);
   $stElement.on('classAdded', calculateAndSet);
   var originalAddClassMethod = jQuery.fn.addClass;
-  var originalAddClassMethod = jQuery.fn.addClass;
   jQuery.fn.addClass = function () {
     var result = originalAddClassMethod.apply(this, arguments);
     jQuery(this).trigger('classAdded');
@@ -57,13 +65,15 @@ $.fn.ySticky = function (settings) {
 // eof sticky  prototype
 
 // STICKY MPU
-$('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd:$('#ad-SE-holder')});
+$('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd: $('#ad-SE-holder')});
 // eof sticky mpu
 
 // STICKY LB/TOP 
 (function () {
   var observeDOM = function (obj, callback) {
-    if (typeof(obj)==="undefined"){return false;}
+    if (typeof (obj) === "undefined") {
+      return false;
+    }
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver, eventListenerSupported = window.addEventListener;
     if (MutationObserver) {
       var obs = new MutationObserver(function (mutations, observer) {
@@ -79,14 +89,14 @@ $('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd:$('#ad-SE
   };
   var stickyKickStart = function ($target, $stEnd, offsetBot) {
     offsetBot = offsetBot || 0;
-    var jobLB = function () {
-
-      if ($target.children().not('iframe').length !== 0) {
+    var jobLB = function () {      
+      if ($target.hasClass('observed')){
+        $target.parent().css({height:""});
         return;
       }
-      
+      $target.addClass('observed');
       $target.parent().css({height: $target.parent().outerHeight()});
-      $target.ySticky({$stEnd: $stEnd.eq(0), offsetBot: offsetBot});
+      $target.children('iframe').ySticky({$stEnd: $stEnd.eq(0), offsetBot: offsetBot});
     };
     if ($target.find('iframe').length > 0) {
       jobLB();
@@ -99,24 +109,24 @@ $('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd:$('#ad-SE
         }
       });
     }
-  }; 
-  
+  };
+
   var stEndList = [];
   stEndList = stEndList.concat($(".cc-video article.video figure.video-player").toArray());
   stEndList = stEndList.concat($(".cc-article article .w__desk--right").toArray());
   stEndList = stEndList.concat($(".cc-event article .w__desk--right").toArray());
   stEndList = stEndList.concat($(".cc-slideshow article .w__desk--right").toArray());
-  stEndList = stEndList.concat($(".tpl-personalityTest-detail article .w__desk--right").toArray());  
-  
+  stEndList = stEndList.concat($(".tpl-personalityTest-detail article .w__desk--right").toArray());
+
   stEndList = stEndList.concat($(".tpl-homepage .b__hero--hp").toArray());
   stEndList = stEndList.concat($("body  > .page-wrapper-holder").toArray());
-  
+
   var $stEndList = $(stEndList);
 
   // lb
-  //stickyKickStart($('.desktop #ad-above-fold-LB-holder'), $($stEndList).eq(0));
+  stickyKickStart($('.desktop #ad-above-fold-LB-holder'), $($stEndList).eq(0));
   // top
-  //stickyKickStart($('.desktop #ad-top-holder'), $($stEndList).eq(0));
-  
+  stickyKickStart($('.desktop #ad-top-holder'), $($stEndList).eq(0));
+
 })();
 // eof sticky lb/top
