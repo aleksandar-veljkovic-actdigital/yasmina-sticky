@@ -9,6 +9,7 @@
 
 // STICKY PROTOTYPE
 $.fn.ySticky = function (settings) {
+  var toReturn = {};
   var $stElement = $(this).eq(0);
   if (!$stElement || $stElement.length < 1) {
     //console.log("ySticky :: no element");
@@ -23,7 +24,6 @@ $.fn.ySticky = function (settings) {
     return false;
   }
   var $stStart = $stElement.parent();
-  $stElement.addClass('y-sticky');
   var calculateAndSet = function () {
     var posStart = $stStart.offset()['top'];
     var posEnd = $stEnd.offset()['top'] - $stElement.outerHeight(true);
@@ -49,18 +49,27 @@ $.fn.ySticky = function (settings) {
     }
   };
   // event bindings
-  $(window).scroll(calculateAndSet);
-  $(window).resize(calculateAndSet);
-  $(document).ready(calculateAndSet);
-  $(window).load(calculateAndSet);
+  $(window).on('scroll', calculateAndSet);
+  $(window).on('resize', calculateAndSet);
+  $(document).on('ready', calculateAndSet);
+  $(window).on('load', calculateAndSet);  
+  $stElement.addClass('y-sticky');
+  calculateAndSet();
   $stElement.on('classAdded', calculateAndSet);
-  var originalAddClassMethod = jQuery.fn.addClass;
-  jQuery.fn.addClass = function () {
-    var result = originalAddClassMethod.apply(this, arguments);
-    jQuery(this).trigger('classAdded');
-    return result;
+  toReturn.destroy = function () {
+    $(window).off('scroll', calculateAndSet);
+    $(window).off('resize', calculateAndSet);
+    $(document).off('ready', calculateAndSet);
+    $(window).off('load', calculateAndSet);
+    $stElement.off('classAdded', calculateAndSet);
+    $stElement.removeClass('y-sticky');
+    $stElement.css({
+      position: '',
+      top: ''
+    });
   };
-  return true;
+  $stElement.data('ySticky', toReturn);
+  return toReturn;
 };
 // eof sticky  prototype
 
@@ -92,11 +101,12 @@ $('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd: $('#ad-S
     var jobLB = function () {      
       if ($target.hasClass('observed')){
         $target.parent().css({height:""});
+        $target.data('ySticky').destroy();
         return;
       }
       $target.addClass('observed');
       $target.parent().css({height: $target.parent().outerHeight()});
-      $target.children('iframe').ySticky({$stEnd: $stEnd.eq(0), offsetBot: offsetBot});
+      $target.ySticky({$stEnd: $stEnd.eq(0), offsetBot: offsetBot});
     };
     if ($target.find('iframe').length > 0) {
       jobLB();
