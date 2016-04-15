@@ -18,6 +18,7 @@ $.fn.ySticky = function (settings) {
   settings = settings || {};
   var offsetTop = settings.offsetTop || 0;
   var offsetBot = settings.offsetBot || 0;
+  var offsetAppear = settings.offsetAppear || 0;
   var $stEnd = settings.$stEnd || $();
   if ($stEnd.length < 1) {
     //console.log("ySticky :: parameters mismach");
@@ -29,19 +30,22 @@ $.fn.ySticky = function (settings) {
     var posEnd = $stEnd.offset()['top'] - $stElement.outerHeight(true);
     var posScooll = $(window).scrollTop() + offsetTop;
     $stElement.css({position: 'fixed'});
-    if (posScooll < posStart) { // scroled above
+    if (posScooll < posStart + offsetAppear) { // scroled above
+      $stElement.removeClass('y-sticked');      
       $stElement.css({
         position: 'relative',
         top: 'auto'
       });
     }
     else if (posScooll > posEnd - offsetBot) { // scroll below
+      $stElement.addClass('y-sticked');
       $stElement.css({
         position: 'fixed',
         top: posEnd - posScooll + offsetTop - offsetBot
       });
     }
     else { // sticky area
+      $stElement.addClass('y-sticked');
       $stElement.css({
         position: 'fixed',
         top: offsetTop
@@ -55,7 +59,7 @@ $.fn.ySticky = function (settings) {
   $(window).on('load', calculateAndSet);  
   $stElement.addClass('y-sticky');
   calculateAndSet();
-  $stElement.on('classAdded', calculateAndSet);
+  $stElement.one('classAdded', calculateAndSet);
   toReturn.destroy = function () {
     $(window).off('scroll', calculateAndSet);
     $(window).off('resize', calculateAndSet);
@@ -67,15 +71,14 @@ $.fn.ySticky = function (settings) {
       position: '',
       top: ''
     });
+    $stElement.removeClass('y-sticked');
   };
   $stElement.data('ySticky', toReturn);
   return toReturn;
 };
 // eof sticky  prototype
 
-// STICKY MPU
-$('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd: $('#ad-SE-holder')});
-// eof sticky mpu
+
 
 // STICKY LB/TOP 
 (function () {
@@ -122,7 +125,8 @@ $('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd: $('#ad-S
   };
 
   var stEndList = [];
-  stEndList = stEndList.concat($(".cc-video article.video figure.video-player").toArray());
+  //stEndList = stEndList.concat($(".cc-video article.video figure.video-player").toArray());
+  stEndList = stEndList.concat($(".cc-video .ad--subnavigation").toArray());
   stEndList = stEndList.concat($(".cc-article article .w__desk--right").toArray());
   stEndList = stEndList.concat($(".cc-event article .w__desk--right").toArray());
   stEndList = stEndList.concat($(".cc-slideshow article .w__desk--right").toArray());
@@ -140,3 +144,20 @@ $('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: 35, $stEnd: $('#ad-S
 
 })();
 // eof sticky lb/top
+
+
+// STICKY MPU
+(function () {
+  var offsetTop = ($('.article-video-wrapper').length > 0) ? 185 : 35;
+  $('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: offsetTop, $stEnd: $('#ad-SE-holder')});
+})();
+// eof sticky mpu
+
+
+// VIDEO
+$(window).load(function () {  
+  var offsetAppear = $('.article-video-wrapper').outerHeight(true) - 150;
+  $('.article-video-wrapper').parent().css({height: $('.article-video-wrapper').parent().outerHeight(true)});
+  $('.article-video-wrapper').ySticky({$stEnd: $('footer.page-wrapper-holder'), offsetAppear: offsetAppear});
+});
+// eof video
