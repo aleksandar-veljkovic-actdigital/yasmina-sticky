@@ -16,9 +16,10 @@ $.fn.ySticky = function (settings) {
     return false;
   }
   settings = settings || {};
-  var offsetTop = settings.offsetTop || 0;
-  var offsetBot = settings.offsetBot || 0;
-  var offsetAppear = settings.offsetAppear || 0;
+  toReturn.settings = settings;
+  settings.offsetTop = settings.offsetTop || 0;
+  settings.offsetBot = settings.offsetBot || 0;
+  settings.offsetAppear = settings.offsetAppear || 0;
   var $stEnd = settings.$stEnd || $();
   if ($stEnd.length < 1) {
     //console.log("ySticky :: parameters mismach");
@@ -28,27 +29,27 @@ $.fn.ySticky = function (settings) {
   var calculateAndSet = function () {
     var posStart = $stStart.offset()['top'];
     var posEnd = $stEnd.offset()['top'] - $stElement.outerHeight(true);
-    var posScooll = $(window).scrollTop() + offsetTop;
+    var posScooll = $(window).scrollTop() + settings.offsetTop;
     $stElement.css({position: 'fixed'});
-    if (posScooll < posStart + offsetAppear) { // scroled above
+    if (posScooll < posStart + settings.offsetAppear) { // scroled above
       $stElement.removeClass('y-sticked');      
       $stElement.css({
         position: 'relative',
         top: 'auto'
       });
     }
-    else if (posScooll > posEnd - offsetBot) { // scroll below
+    else if (posScooll > posEnd - settings.offsetBot) { // scroll below
       $stElement.addClass('y-sticked');
       $stElement.css({
         position: 'fixed',
-        top: posEnd - posScooll + offsetTop - offsetBot
+        top: posEnd - posScooll + settings.offsetTop - settings.offsetBot
       });
     }
     else { // sticky area
       $stElement.addClass('y-sticked');
       $stElement.css({
         position: 'fixed',
-        top: offsetTop
+        top: settings.offsetTop
       });
     }
   };
@@ -73,6 +74,7 @@ $.fn.ySticky = function (settings) {
     });
     $stElement.removeClass('y-sticked');
   };
+  toReturn.calculateAndSet = calculateAndSet;
   $stElement.data('ySticky', toReturn);
   return toReturn;
 };
@@ -149,15 +151,33 @@ $.fn.ySticky = function (settings) {
 // STICKY MPU
 (function () {
   var offsetTop = ($('.article-video-wrapper').length > 0) ? 185 : 35;
-  $('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: offsetTop, $stEnd: $('#ad-SE-holder')});
+  window.stickyMPU = $('.desktop #ad-above-fold-MPU-holder').ySticky({offsetTop: offsetTop, $stEnd: $('#ad-SE-holder')});
 })();
 // eof sticky mpu
 
 
 // VIDEO
-$(window).load(function () {  
-  var offsetAppear = $('.article-video-wrapper').outerHeight(true) - 150;
-  $('.article-video-wrapper').parent().css({height: $('.article-video-wrapper').parent().outerHeight(true)});
-  $('.article-video-wrapper').ySticky({$stEnd: $('footer.page-wrapper-holder'), offsetAppear: offsetAppear});
-});
+
+
+
+  $(window).load(function () {
+    var offsetAppear = $('.article-video-wrapper').outerHeight(true) - 150;
+    var $wrap = $('.desktop .article-video-wrapper');
+    var $close = $('<span class="vs-close" />');
+    $wrap.parent().css({height: $('.article-video-wrapper').parent().outerHeight(true)});
+    var sticky = $wrap.ySticky({$stEnd: $('footer.page-wrapper-holder'), offsetAppear: offsetAppear});
+    $wrap.children('.page-wrapper-holder').append($close);
+    $close.click(function () {
+      sticky.destroy();
+      $('.desktop #ad-above-fold-MPU-holder').data('ySticky').settings.offsetTop = 35;
+      $('.desktop #ad-above-fold-MPU-holder').data('ySticky').calculateAndSet();
+    });
+
+
+  });
+  
+
+
+
+
 // eof video

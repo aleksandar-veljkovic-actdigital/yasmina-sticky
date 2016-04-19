@@ -6,51 +6,119 @@
     min-height: #{$stickyBarHeight};
     .article-video-wrapper.y-sticked {
       width: 100%;
-      //background-color: blue;
       padding: 0;
       text-align: center;
       z-index: 1001;
       height: #{$stickyBarHeight};
       .page-wrapper-holder {
-        position: relative;
-        display: inline-block;                
+        width: 100%;
+        height: 100%;
+        position: relative;           
         right: 0;
         overflow: hidden;        
-        max-height: #{$stickyBarHeight};
-        .video-player {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 28.5%!important;
-          height: 100%;
-          line-height: #{$stickyBarHeight};
-          .dvjs_video { // vjs
-            display: inline-block;
-            vertical-align: middle;
-            position: relative;
-            height: auto!important;
-            width: auto!important;
-            max-width: 100%;
-            max-height: 100%;
-            line-height: normal;
-            video {
-              height: auto!important;
-              width: auto!important;
-              max-width: 100%;
-              max-height: 100%;           
+        max-height: #{$stickyBarHeight};        
+        header {
+          & > h1 {
+            position: absolute;
+            right: 250px;
+            left: 100px;
+            top: 0;
+            height: 100px;
+            text-align: right;
+            font-size: 17px;
+            line-height: 32px;
+            height: 64px;
+            overflow: hidden;
+          }          
+          .article-video-header__author {
+            position: absolute;
+            right: 240px;
+            bottom: 8px;
+          }
+        }
+        .article-video-holder {
+          .video-player {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 228px;
+            height: $stickyBarHeight;
+            overflow: hidden;
+            // vjs
+            .dvjs_video { 
+              height: 100%!important;
+              width: 100%!important;
+              line-height: $stickyBarHeight;
+              video {
+                vertical-align: middle;
+              }
+            }
+            // youtube
+            iframe { 
+              height: 100%;
+              width: 100%;
+            }
+            .vjs-related-wrap {
+              .vjs-related {
+                top: 35%;
+                line-height: normal;                
+                h5 {
+                  display: none;
+                }
+                //height: 100%;
+                & > a {
+                  display: none;
+                }
+                & > a:nth-child(2),
+                  & > a:nth-child(3),
+                  & > a:nth-child(4) {
+                  display: inline-block;
+                }
+              }
             }
           }
-          iframe { // youtube
-            height: 100%;
+        }
+        
+        
+        .article-footer__socials--bottom {
+          margin: 0;
+          position: absolute;
+          bottom: 8px;
+          right: 530px;
+          .social_share {
+            .share_btn {
+              width: 34px;
+              height: 34px;
+              margin-left: 11px;
+              a.box {
+                background-position: center 9px;
+                .share {
+                  span {
+                    display: none;
+                  }
+                }
+                .count {
+                  display: none;
+                }
+              }
+            }
           }
         }
-        header {
-          float: right;
-          width: 70%;
+        
+        .vs-close {
+          display: block;
+          width: 50px;
+          height: 50px;
+          background: url("/assets/images/sticky-video-close.svg") no-repeat center center;
+          position: absolute;
+          left: 0;
+          top: 50%;
+          margin-top: -25px;
         }
-        .article-footer__socials--bottom {
-          float: right;
-        }
+        
+
+
+
       }
     }
   }
